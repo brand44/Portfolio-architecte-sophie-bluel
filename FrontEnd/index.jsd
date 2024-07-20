@@ -1,4 +1,4 @@
-
+/*variables*/
 const gallery = document.querySelector(".gallery")
 const filters = document.querySelector(".menudecategories");
 
@@ -12,7 +12,7 @@ async function getworks(){
 }
 
 /***affichage */
-async function affichage(_element){ 
+async function affichage(){ 
     arrayworks= await getworks()
     arrayworks.forEach(element => {
         const figure= document.createElement("figure");
@@ -57,7 +57,7 @@ async function filterCategorie() {
     /* Récupération des œuvres de manière asynchrone */
     //const images = await getworks();
 
-    /* Sélection de tous les boutons dans l'élément avec la classe "menude categories" */
+    /* Sélection de tous les boutons dans l'élément avec la classe "container-filtres" */
     const buttons = document.querySelectorAll(".menudecategories button");
     console.log(buttons);
 
@@ -76,29 +76,31 @@ async function filterCategorie() {
 
                 }else{
                     console.log("Je vais déselectionner le bouton "+cat.id)
+                    document.getElementById('catgeroy-btn-0').classList.remove("gallery-active");
                     document.getElementById('catgeroy-btn-'+cat.id).classList.remove("gallery-active");
                 }
                 if(btnId ==='catgeroy-btn-0'){
                     document.getElementById('catgeroy-btn-0').classList.add("gallery-active");
                 }
             })
+            /* Vidage de la galerie d'images */
+            //gallery.innerHTML = "";
+            // if (btnId!=="catgeroy-btn-0") {
+            //     figures = document.querySelectorAll('.figure-class');
+            //     figures.forEach(element =>{
+            //         console.log(element.classList);
+            //     });
+
+            //     // const triCategories = images.((element)=> { 
+            //     //     return element.categotyId == btnId
+            //     // })
+            //     // triCategories.forEach(_element => {
+            //     //     affichage();
+            //     // });
+            // }else{
+
+            // }
         });
     });
 }
-
-async function TriCat() {
-    const tri= await getworks();
-    console.log(tri)
-    const buttonId = document.querySelectorAll(".menudecategories button");
-    buttonId.forEach(cat => {
-        if ('btn.id'==="1") {
-            document.getElementById('catgeroy-btn-1'+cat.id1)
-            return element.id1
-        } else {
-            
-        }
-        } )
-        
-};
-TriCat();
 /* Appel de la fonction pour filtrer les catégories au chargement de la page */
