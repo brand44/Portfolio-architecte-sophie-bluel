@@ -10,15 +10,20 @@ async function getworks(){
     const response = await fetch("http://localhost:5678/api/works");
     return await response.json();
 }
+async function initWorkArray(){
+    arrayworks = await getworks();
+    affichage(arrayworks);
+
+};
 
 /***affichage */
-async function affichage(_element){ 
-    arrayworks= await getworks()
+async function affichage(arrayworks){ 
+    gallery.innerHTML = "";
     arrayworks.forEach(element => {
         const figure= document.createElement("figure");
         figure.classList.add('category-'+element.category.id);
         figure.classList.add('figure-class');
-        figure.id = 'category-'+element.id;
+        figure.id = 'work-'+element.id;
         const img= document.createElement("img");
         img.src=element.imageUrl;
         const figcaption= document.createElement("figcaption");
@@ -27,10 +32,11 @@ async function affichage(_element){
         figure.appendChild(figcaption)
         gallery.appendChild(figure)
     });
-    displayCategoriesButtons();
     
 }
-affichage();
+
+initWorkArray();
+displayCategoriesButtons();
 
 //******affichage catégories */
 
@@ -59,7 +65,6 @@ async function filterCategorie() {
 
     /* Sélection de tous les boutons dans l'élément avec la classe "menude categories" */
     const buttons = document.querySelectorAll(".menudecategories button");
-    console.log(buttons);
 
     /* Ajout d'un écouteur d'événements "click" à chaque bouton */
     buttons.forEach((button) => {
@@ -67,38 +72,63 @@ async function filterCategorie() {
             console.log("je suis la")
             /* Récupération de l'ID du bouton cliqué */
             btnId= e.target.id
-            console.log(categories);
+            //console.log(categories);
             /* Changer le style du bouton catégorie choisi */ 
+            console.log("J'ai choisi le bouton:  "+btnId);
+            document.getElementById('catgeroy-btn-0').classList.remove("gallery-active");
+            
             categories.forEach(cat =>{
                 if('catgeroy-btn-'+cat.id === btnId){
                     document.getElementById('catgeroy-btn-'+cat.id).classList.add("gallery-active");
-                    console.log("Je vais selectionner le bouton "+cat.id)
+                    //console.log("Je vais selectionner le bouton "+cat.id)
 
                 }else{
-                    console.log("Je vais déselectionner le bouton "+cat.id)
+                    //console.log("Je vais déselectionner le bouton "+cat.id)
                     document.getElementById('catgeroy-btn-'+cat.id).classList.remove("gallery-active");
                 }
                 if(btnId ==='catgeroy-btn-0'){
                     document.getElementById('catgeroy-btn-0').classList.add("gallery-active");
                 }
-            })
+            });
+            TriCat(btnId.replace("catgeroy-btn-", ''));
+
         });
     });
 }
 
-async function TriCat() {
-    const tri= await getworks();
-    console.log(tri)
-    const buttonId = document.querySelectorAll(".menudecategories button");
-    buttonId.forEach(cat => {
-        if ('btn.id'==="1") {
-            document.getElementById('catgeroy-btn-1'+cat.id1)
-            return element.id1
-        } else {
-            
-        }
-        } )
+async function TriCat(btnId) {
+    if(btnId == 0){
+        // Je dois tous les afficher
+        initWorkArray();
+    }else{
+        //Je dois afficher que les bons works
+        filtredWork = arrayworks.filter((item) => {
+            return item.categoryId == btnId
+        });
+        affichage(filtredWork);
+    }
         
 };
-TriCat();
-/* Appel de la fonction pour filtrer les catégories au chargement de la page */
+//**bordure et logout */
+document.addEventListener("DOMContentLoaded", function () {
+    const loginItem = document.getElementById("login-item");
+    const logoutItem = document.getElementById("logout-item");
+    const editMode = document.getElementById("edit-mode");
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        loginItem.style.display = "none";
+        logoutItem.style.display = "block";
+        editMode.style.display = "block";
+    } else {
+        loginItem.style.display = "block";
+        logoutItem.style.display = "none";
+        editMode.style.display = "none";
+    }
+
+    logoutItem.addEventListener("click", function () {
+        console.log("Logout clicked");
+        localStorage.removeItem("token");
+        window.location.href = "login.html";
+    });
+});
